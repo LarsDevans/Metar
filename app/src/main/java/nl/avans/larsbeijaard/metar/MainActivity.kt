@@ -6,13 +6,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
+import nl.avans.larsbeijaard.metar.ui.component.Avatar
 import nl.avans.larsbeijaard.metar.ui.theme.MetarTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,10 +24,18 @@ class MainActivity : ComponentActivity() {
             MetarTheme {
                 Scaffold(
                     topBar = { TopBar() },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(WindowInsets.systemBars.asPaddingValues())
-                ) { }
+                    modifier = Modifier.fillMaxSize(),
+                    content = { paddingValues ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(paddingValues),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Avatar()
+                        }
+                    }
+                )
             }
         }
     }
