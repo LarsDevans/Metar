@@ -4,5 +4,7 @@ import nl.avans.larsbeijaard.metar.data.constant.GenderType
 
 data class AvatarUiState(
     val username: String = "Linde",
-    val gender: GenderType = GenderType.FEMALE
+    val gender: GenderType = GenderType.FEMALE,
+
+    val avatarUrl: String? = null
 )

@@ -6,8 +6,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,13 +17,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import nl.avans.larsbeijaard.metar.ui.component.Avatar
+import nl.avans.larsbeijaard.metar.ui.component.TextInput
 import nl.avans.larsbeijaard.metar.ui.theme.MetarTheme
+import nl.avans.larsbeijaard.metar.ui.viewmodel.avatar.AvatarUiState
+import nl.avans.larsbeijaard.metar.ui.viewmodel.avatar.AvatarViewModel
 import nl.avans.larsbeijaard.metar.ui.viewmodel.theme.ThemeUiState
 import nl.avans.larsbeijaard.metar.ui.viewmodel.theme.ThemeViewModel
 
 class MainActivity : ComponentActivity() {
     private val themeViewModel: ThemeViewModel by viewModels()
+    private val avatarViewModel: AvatarViewModel by viewModels()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,19 +37,28 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val themeUiState: ThemeUiState by themeViewModel.uiState.collectAsState()
+            val avatarUiState: AvatarUiState by avatarViewModel.uiState.collectAsState()
             MetarTheme(darkTheme = themeUiState.isDarkTheme) {
                 Scaffold(
                     topBar = { TopBar() },
                     modifier = Modifier.fillMaxSize(),
                     content = { paddingValues ->
-                        Box(
+                        Column(
                             modifier = Modifier
-                                .fillMaxSize()
+                                .fillMaxWidth()
                                 .padding(paddingValues),
-                            contentAlignment = Alignment.TopCenter
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
+                            TextInput(
+                                label = stringResource(R.string.username),
+                                value = avatarUiState.username,
+                                placeholder = stringResource(R.string.username_placeholder),
+                                onValueChange = { avatarViewModel.updateUsername(it) }
+                            )
                             Avatar(
-                                modifier = Modifier.fillMaxWidth(fraction = 0.8f)
+                                modifier = Modifier.fillMaxWidth(fraction = 0.8f),
+                                viewModel = avatarViewModel
                             )
                         }
                     }
