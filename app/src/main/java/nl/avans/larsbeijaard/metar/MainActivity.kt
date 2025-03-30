@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -37,33 +38,44 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val themeUiState: ThemeUiState by themeViewModel.uiState.collectAsState()
-            val avatarUiState: AvatarUiState by avatarViewModel.uiState.collectAsState()
             MetarTheme(darkTheme = themeUiState.isDarkTheme) {
-                Scaffold(
-                    topBar = { TopBar() },
-                    modifier = Modifier.fillMaxSize(),
-                    content = { paddingValues ->
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(paddingValues),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            TextInput(
-                                label = stringResource(R.string.username),
-                                value = avatarUiState.username,
-                                placeholder = stringResource(R.string.username_placeholder),
-                                onValueChange = { avatarViewModel.updateUsername(it) }
-                            )
-                            Avatar(
-                                modifier = Modifier.fillMaxWidth(fraction = 0.8f),
-                                viewModel = avatarViewModel
-                            )
-                        }
-                    }
-                )
+                AppLayout()
             }
         }
+    }
+
+    @Composable
+    fun AppLayout() {
+        Scaffold(
+            topBar = { TopBar() },
+            modifier = Modifier.fillMaxSize(),
+            content = { paddingValues ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(paddingValues),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    MainContent()
+                }
+            }
+        )
+    }
+
+    @Composable
+    fun MainContent() {
+        val avatarUiState: AvatarUiState by avatarViewModel.uiState.collectAsState()
+
+        TextInput(
+            label = stringResource(R.string.username),
+            value = avatarUiState.username,
+            placeholder = stringResource(R.string.username_placeholder),
+            onValueChange = { avatarViewModel.updateUsername(it) }
+        )
+        Avatar(
+            modifier = Modifier.fillMaxWidth(fraction = 0.8f),
+            viewModel = avatarViewModel
+        )
     }
 }
