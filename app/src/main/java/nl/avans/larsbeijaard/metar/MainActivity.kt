@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
@@ -40,7 +41,9 @@ class MainActivity : ComponentActivity() {
                                 .padding(paddingValues),
                             contentAlignment = Alignment.TopCenter
                         ) {
-                            Avatar()
+                            Avatar(
+                                modifier = Modifier.fillMaxWidth(fraction = 0.8f)
+                            )
                         }
                     }
                 )
