@@ -11,6 +11,10 @@ class AvatarViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(AvatarUiState())
     val uiState: StateFlow<AvatarUiState> = _uiState.asStateFlow()
 
+    init {
+        updateAvatarUrl()
+    }
+
     fun updateUsername(username: String) {
         _uiState.update { it.copy(username = username) }
         updateAvatarUrl()
