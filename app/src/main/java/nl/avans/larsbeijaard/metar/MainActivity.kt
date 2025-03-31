@@ -84,6 +84,7 @@ class MainActivity : ComponentActivity() {
             onSelectedChange = { avatarViewModel.updateGender(it) },
             onValueChange = { avatarViewModel.updateGender(it) }
         )
+        
         Avatar(
             modifier = Modifier.fillMaxWidth(fraction = 0.8f),
             viewModel = avatarViewModel
