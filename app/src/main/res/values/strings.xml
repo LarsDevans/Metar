@@ -4,4 +4,6 @@
     <string name="avatar_image">Avatar afbeelding</string>
     <string name="username">Gebruikersnaam</string>
     <string name="username_placeholder">Linde</string>
+    <string name="male">Mannelijk</string>
+    <string name="female">Vrouwelijk</string>
 </resources>

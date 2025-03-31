@@ -18,9 +18,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import nl.avans.larsbeijaard.metar.data.constant.getAllGenderTypes
+import nl.avans.larsbeijaard.metar.data.constant.toLocalizedGenderString
 import nl.avans.larsbeijaard.metar.ui.component.Avatar
+import nl.avans.larsbeijaard.metar.ui.component.DropdownMenu
 import nl.avans.larsbeijaard.metar.ui.component.TextInput
 import nl.avans.larsbeijaard.metar.ui.theme.MetarTheme
 import nl.avans.larsbeijaard.metar.ui.viewmodel.avatar.AvatarUiState
@@ -72,6 +76,13 @@ class MainActivity : ComponentActivity() {
             value = avatarUiState.username,
             placeholder = stringResource(R.string.username_placeholder),
             onValueChange = { avatarViewModel.updateUsername(it) }
+        )
+
+        DropdownMenu(
+            options = getAllGenderTypes(context = LocalContext.current),
+            selected = avatarUiState.gender.toLocalizedGenderString(context = LocalContext.current),
+            onSelectedChange = { avatarViewModel.updateGender(it) },
+            onValueChange = { avatarViewModel.updateGender(it) }
         )
         Avatar(
             modifier = Modifier.fillMaxWidth(fraction = 0.8f),
