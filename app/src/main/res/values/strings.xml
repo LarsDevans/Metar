@@ -2,4 +2,8 @@
     <string name="app_name">Metar</string>
     <string name="dark_light_mode">Donkere/lichte modus</string>
     <string name="avatar_image">Avatar afbeelding</string>
+    <string name="username">Gebruikersnaam</string>
+    <string name="username_placeholder">Linde</string>
+    <string name="male">Mannelijk</string>
+    <string name="female">Vrouwelijk</string>
 </resources>
