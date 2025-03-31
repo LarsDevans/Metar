@@ -23,19 +23,17 @@ fun Avatar(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Box(modifier = modifier) {
-        SubcomposeAsyncImage(
-            model = uiState.avatarUrl,
-            contentDescription = stringResource(R.string.avatar_image),
-            loading = { CircularProgressIndicator() },
-            error = {
-                Image(
-                    painterResource(R.drawable.error_image),
-                    contentDescription = null
-                )
-            },
-            modifier = Modifier.fillMaxWidth(),
-            contentScale = ContentScale.FillWidth
-        )
-    }
+    SubcomposeAsyncImage(
+        model = uiState.avatarUrl,
+        contentDescription = stringResource(R.string.avatar_image),
+        loading = { CircularProgressIndicator() },
+        error = {
+            Image(
+                painterResource(R.drawable.error_image),
+                contentDescription = null
+            )
+        },
+        modifier = modifier.fillMaxWidth(),
+        contentScale = ContentScale.FillWidth
+    )
 }
