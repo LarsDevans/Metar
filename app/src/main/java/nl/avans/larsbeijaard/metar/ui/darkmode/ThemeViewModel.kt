@@ -1,6 +1,6 @@
-package nl.avans.larsbeijaard.metar.ui.viewmodel.theme
+package nl.avans.larsbeijaard.metar.ui.darkmode
 
-import nl.avans.larsbeijaard.metar.data.DarkModePreferences
+import nl.avans.larsbeijaard.metar.data.darkmode.DarkModePreferences
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,6 +31,7 @@ class ThemeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             darkModePreferences.darkModeFlow.collect { isDark ->
                 updateThemeState(isDark)
+
                 AppCompatDelegate.setDefaultNightMode(
                     if (isDark) AppCompatDelegate.MODE_NIGHT_YES
                     else AppCompatDelegate.MODE_NIGHT_NO
@@ -41,9 +42,7 @@ class ThemeViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun updateThemeState(isDarkTheme: Boolean) {
         _uiState.update { currentState ->
-            currentState.copy(
-                isDarkTheme = isDarkTheme
-            )
+            currentState.copy(isDarkTheme = isDarkTheme)
         }
     }
 

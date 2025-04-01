@@ -1,93 +1,58 @@
 package nl.avans.larsbeijaard.metar
 
-import nl.avans.larsbeijaard.metar.ui.component.TopBar
+import nl.avans.larsbeijaard.metar.ui.TopBar
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import nl.avans.larsbeijaard.metar.data.constant.getAllGenderTypes
-import nl.avans.larsbeijaard.metar.data.constant.toLocalizedGenderString
-import nl.avans.larsbeijaard.metar.ui.component.Avatar
-import nl.avans.larsbeijaard.metar.ui.component.DropdownMenu
-import nl.avans.larsbeijaard.metar.ui.component.TextInput
+import androidx.navigation.compose.rememberNavController
 import nl.avans.larsbeijaard.metar.ui.theme.MetarTheme
-import nl.avans.larsbeijaard.metar.ui.viewmodel.avatar.AvatarUiState
-import nl.avans.larsbeijaard.metar.ui.viewmodel.avatar.AvatarViewModel
-import nl.avans.larsbeijaard.metar.ui.viewmodel.theme.ThemeUiState
-import nl.avans.larsbeijaard.metar.ui.viewmodel.theme.ThemeViewModel
+import nl.avans.larsbeijaard.metar.ui.darkmode.ThemeUiState
+import nl.avans.larsbeijaard.metar.ui.darkmode.ThemeViewModel
+import nl.avans.larsbeijaard.metar.ui.navigation.MetarNavHost
 
 class MainActivity : ComponentActivity() {
     private val themeViewModel: ThemeViewModel by viewModels()
-    private val avatarViewModel: AvatarViewModel by viewModels()
 
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         setContent {
             val themeUiState: ThemeUiState by themeViewModel.uiState.collectAsState()
+
             MetarTheme(darkTheme = themeUiState.isDarkTheme) {
-                AppLayout()
+                MainScreen()
             }
         }
     }
+}
 
-    @Composable
-    fun AppLayout() {
-        Scaffold(
-            topBar = { TopBar() },
-            modifier = Modifier.fillMaxSize(),
-            content = { paddingValues ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(paddingValues),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    MainContent()
-                }
-            }
-        )
-    }
-
-    @Composable
-    fun MainContent() {
-        val avatarUiState: AvatarUiState by avatarViewModel.uiState.collectAsState()
-
-        TextInput(
-            label = stringResource(R.string.username),
-            value = avatarUiState.username,
-            placeholder = stringResource(R.string.username_placeholder),
-            onValueChange = { avatarViewModel.updateUsername(it) }
-        )
-
-        DropdownMenu(
-            options = getAllGenderTypes(context = LocalContext.current),
-            selected = avatarUiState.gender.toLocalizedGenderString(context = LocalContext.current),
-            onSelectedChange = { avatarViewModel.updateGender(it) },
-            onValueChange = { avatarViewModel.updateGender(it) }
-        )
-        
-        Avatar(
-            modifier = Modifier.fillMaxWidth(fraction = 0.8f),
-            viewModel = avatarViewModel
-        )
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun MainScreen() {
+    Scaffold(
+        modifier = Modifier.padding(
+            WindowInsets.systemBars.asPaddingValues()
+        ),
+        topBar = { TopBar() }
+    ) {
+        // Account for the TopBar height by adding a padding at the top
+        Box(modifier = Modifier.padding(top = 64.dp)) {
+            MetarNavHost(navController = rememberNavController())
+        }
     }
 }

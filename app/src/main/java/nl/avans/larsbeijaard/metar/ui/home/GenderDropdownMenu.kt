@@ -1,4 +1,4 @@
-package nl.avans.larsbeijaard.metar.ui.component
+package nl.avans.larsbeijaard.metar.ui.home
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,15 +17,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import nl.avans.larsbeijaard.metar.R
+import nl.avans.larsbeijaard.metar.data.avatar.getAllGenderTypes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownMenu(
-    options: List<String>,
+fun GenderDropdownMenu(
     selected: String,
-    onSelectedChange: (String) -> Unit,
-    onValueChange: (String) -> Unit
+    onSelectedChange: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -38,34 +42,35 @@ fun DropdownMenu(
     ) {
         TextField(
             value = selected,
-            onValueChange = onValueChange,
+            onValueChange = {}, // It's read-only
             readOnly = true,
             label = { Text("Gender") },
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = null
+                    contentDescription = stringResource(R.string.dropdown_menu_arrow)
                 )
             },
             modifier = Modifier
+                .fillMaxWidth()
                 .menuAnchor(
                     type = MenuAnchorType.PrimaryEditable,
                     enabled = true
                 )
-                .fillMaxWidth()
         )
 
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            options.forEach { option ->
+            getAllGenderTypes(LocalContext.current).forEach { option ->
                 DropdownMenuItem(
                     text = { Text(option) },
                     onClick = {
                         onSelectedChange(option)
                         expanded = false
-                    }
+                    },
+                    modifier = Modifier.semantics { contentDescription = option }
                 )
             }
         }

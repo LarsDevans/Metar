@@ -1,11 +1,11 @@
-package nl.avans.larsbeijaard.metar.data
+package nl.avans.larsbeijaard.metar.data.darkmode
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import androidx.datastore.preferences.preferencesDataStore
 
 private val Context.dataStore by preferencesDataStore(name = "settings")
 
@@ -16,7 +16,7 @@ class DarkModePreferences(private val context: Context) {
 
     val darkModeFlow: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
-            preferences[DARK_MODE_KEY] == true
+            preferences[DARK_MODE_KEY] ?: false
         }
 
     suspend fun saveDarkMode(enabled: Boolean) {

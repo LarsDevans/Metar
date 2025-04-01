@@ -1,39 +1,35 @@
 package nl.avans.larsbeijaard.metar.ui.component
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.SubcomposeAsyncImage
 import nl.avans.larsbeijaard.metar.R
-import nl.avans.larsbeijaard.metar.ui.viewmodel.avatar.AvatarViewModel
 
 @Composable
 fun Avatar(
-    modifier: Modifier = Modifier,
-    viewModel: AvatarViewModel = viewModel()
+    model: String,
+    modifier: Modifier = Modifier
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-
     SubcomposeAsyncImage(
-        model = uiState.avatarUrl,
+        model = model,
         contentDescription = stringResource(R.string.avatar_image),
-        loading = { CircularProgressIndicator() },
+        modifier = modifier.fillMaxWidth().aspectRatio(1f),
+        loading = { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) },
         error = {
             Image(
-                painterResource(R.drawable.error_image),
-                contentDescription = null
+                painter = painterResource(R.drawable.error_image),
+                contentDescription = stringResource(R.string.error_image_description),
+                modifier = Modifier.fillMaxWidth().aspectRatio(1f)
             )
         },
-        modifier = modifier.fillMaxWidth(),
-        contentScale = ContentScale.FillWidth
+        contentScale = ContentScale.Crop
     )
 }

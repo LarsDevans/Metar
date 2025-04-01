@@ -1,4 +1,4 @@
-package nl.avans.larsbeijaard.metar.ui.component
+package nl.avans.larsbeijaard.metar.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -23,7 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import nl.avans.larsbeijaard.metar.R
 import nl.avans.larsbeijaard.metar.ui.icons.Dark_mode
 import nl.avans.larsbeijaard.metar.ui.icons.Light_mode
-import nl.avans.larsbeijaard.metar.ui.viewmodel.theme.ThemeViewModel
+import nl.avans.larsbeijaard.metar.ui.darkmode.ThemeViewModel
 
 @Composable
 fun TopBar(themeViewModel: ThemeViewModel = viewModel()) {
@@ -47,7 +47,7 @@ fun TopBar(themeViewModel: ThemeViewModel = viewModel()) {
 @Composable
 private fun Headline() {
     Text(
-        stringResource(R.string.app_name),
+        text = stringResource(R.string.app_name),
         style = MaterialTheme.typography.titleLarge
     )
 }
