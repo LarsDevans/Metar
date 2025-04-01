@@ -1,4 +1,4 @@
-package nl.avans.larsbeijaard.metar.ui.component
+package nl.avans.larsbeijaard.metar.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -47,7 +47,7 @@ fun TopBar(themeViewModel: ThemeViewModel = viewModel()) {
 @Composable
 private fun Headline() {
     Text(
-        stringResource(R.string.app_name),
+        text = stringResource(R.string.app_name),
         style = MaterialTheme.typography.titleLarge
     )
 }
