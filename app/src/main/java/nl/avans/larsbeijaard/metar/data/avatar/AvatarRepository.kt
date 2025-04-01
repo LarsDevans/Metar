@@ -6,12 +6,14 @@ class DefaultAvatarRepository(
     private val avatarDao: AvatarDao
 ) : AvatarRepository {
     override fun getAllStream(): Flow<List<Avatar>> = avatarDao.getAll()
+    override fun getByIdStream(id: Int): Flow<Avatar?> = avatarDao.getById(id)
 
     override suspend fun insertAvatar(avatar: Avatar) = avatarDao.insert(avatar)
 }
 
 interface AvatarRepository {
     fun getAllStream(): Flow<List<Avatar>>
+    fun getByIdStream(id: Int): Flow<Avatar?>
 
     suspend fun insertAvatar(avatar: Avatar)
 }

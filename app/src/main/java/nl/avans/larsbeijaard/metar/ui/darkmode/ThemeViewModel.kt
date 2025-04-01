@@ -1,6 +1,6 @@
-package nl.avans.larsbeijaard.metar.ui.theme
+package nl.avans.larsbeijaard.metar.ui.darkmode
 
-import nl.avans.larsbeijaard.metar.data.DarkModePreferences
+import nl.avans.larsbeijaard.metar.data.darkmode.DarkModePreferences
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope

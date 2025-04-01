@@ -11,6 +11,9 @@ interface AvatarDao {
     @Query("SELECT * FROM avatars")
     fun getAll(): Flow<List<Avatar>>
 
+    @Query("SELECT * FROM avatars WHERE id = :id")
+    fun getById(id: Int): Flow<Avatar>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(avatar: Avatar)
 }

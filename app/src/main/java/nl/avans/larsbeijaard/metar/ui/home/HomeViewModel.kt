@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import nl.avans.larsbeijaard.metar.data.GenderType
-import nl.avans.larsbeijaard.metar.data.asGenderType
+import nl.avans.larsbeijaard.metar.data.avatar.GenderType
+import nl.avans.larsbeijaard.metar.data.avatar.asGenderType
 import nl.avans.larsbeijaard.metar.data.avatar.Avatar
 import nl.avans.larsbeijaard.metar.data.avatar.AvatarRepository
 

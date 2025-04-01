@@ -15,12 +15,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import nl.avans.larsbeijaard.metar.R
-import nl.avans.larsbeijaard.metar.data.getAllGenderTypes
-import nl.avans.larsbeijaard.metar.data.toApiString
-import nl.avans.larsbeijaard.metar.data.toLocalizedGenderString
+import nl.avans.larsbeijaard.metar.data.avatar.toApiString
+import nl.avans.larsbeijaard.metar.data.avatar.toLocalizedGenderString
 import nl.avans.larsbeijaard.metar.ui.AppViewModelProvider
 import nl.avans.larsbeijaard.metar.ui.component.Avatar
-import nl.avans.larsbeijaard.metar.ui.component.DropdownMenu
 import nl.avans.larsbeijaard.metar.ui.navigation.NavigationDestination
 
 object HomeDestination : NavigationDestination {
@@ -50,8 +48,7 @@ fun HomeScreen(
             singleLine = true
         )
 
-        DropdownMenu(
-            options = getAllGenderTypes(context = LocalContext.current),
+        GenderDropdownMenu(
             selected = uiState.value.genderType.toLocalizedGenderString(LocalContext.current),
             onSelectedChange = { viewModel.updateGender(it) }
         )

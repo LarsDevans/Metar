@@ -1,4 +1,4 @@
-package nl.avans.larsbeijaard.metar.ui.component
+package nl.avans.larsbeijaard.metar.ui.home
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,12 +17,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import nl.avans.larsbeijaard.metar.data.avatar.getAllGenderTypes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownMenu(
-    options: List<String>,
+fun GenderDropdownMenu(
     selected: String,
     onSelectedChange: (String) -> Unit
 ) {
@@ -58,7 +59,7 @@ fun DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            options.forEach { option ->
+            getAllGenderTypes(LocalContext.current).forEach { option ->
                 DropdownMenuItem(
                     text = { Text(option) },
                     onClick = {
