@@ -1,6 +1,7 @@
 package nl.avans.larsbeijaard.metar.ui.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -13,10 +14,11 @@ import nl.avans.larsbeijaard.metar.R
 
 @Composable
 fun Avatar(
+    model: String,
     modifier: Modifier = Modifier
 ) {
     SubcomposeAsyncImage(
-        model = "https://avatar.iran.liara.run/public",
+        model = model,
         contentDescription = stringResource(R.string.avatar_image),
         loading = { CircularProgressIndicator() },
         error = {
@@ -25,7 +27,9 @@ fun Avatar(
                 contentDescription = null
             )
         },
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .aspectRatio(ratio = 1f),
         contentScale = ContentScale.FillWidth
     )
 }

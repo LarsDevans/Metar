@@ -3,7 +3,7 @@ package nl.avans.larsbeijaard.metar.data
 import android.content.Context
 import nl.avans.larsbeijaard.metar.R
 
-enum class GenderType { MALE, FEMALE }
+enum class GenderType { FEMALE, MALE }
 
 fun getAllGenderTypes(context: Context): List<String> {
     return listOf(
@@ -21,9 +21,16 @@ fun String.asGenderType(): GenderType {
     }
 }
 
+fun GenderType.toApiString(): String {
+    return when (this) {
+        GenderType.FEMALE -> "girl"
+        GenderType.MALE -> "boy"
+    }
+}
+
 fun GenderType.toLocalizedGenderString(context: Context): String {
     return when (this) {
-        GenderType.MALE -> context.getString(R.string.male)
         GenderType.FEMALE -> context.getString(R.string.female)
+        GenderType.MALE -> context.getString(R.string.male)
     }
 }

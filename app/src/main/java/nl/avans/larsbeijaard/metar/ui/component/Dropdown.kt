@@ -24,8 +24,7 @@ import androidx.compose.ui.unit.dp
 fun DropdownMenu(
     options: List<String>,
     selected: String,
-    onSelectedChange: (String) -> Unit,
-    onValueChange: (String) -> Unit
+    onSelectedChange: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -38,7 +37,7 @@ fun DropdownMenu(
     ) {
         TextField(
             value = selected,
-            onValueChange = onValueChange,
+            onValueChange = {},
             readOnly = true,
             label = { Text("Gender") },
             trailingIcon = {
