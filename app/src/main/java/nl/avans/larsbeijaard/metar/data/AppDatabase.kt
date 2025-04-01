@@ -21,7 +21,10 @@ abstract class AppDatabase : RoomDatabase() {
                     context = context,
                     klass = AppDatabase::class.java,
                     name = "app_database"
-                ).build().also { Instance = it }
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
+                    .also { Instance = it }
             }
         }
     }
