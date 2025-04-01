@@ -27,7 +27,7 @@ fun Avatar(
             Image(
                 painter = painterResource(R.drawable.error_image),
                 contentDescription = stringResource(R.string.error_image_description),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().aspectRatio(1f)
             )
         },
         contentScale = ContentScale.Crop
