@@ -31,6 +31,7 @@ class ThemeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             darkModePreferences.darkModeFlow.collect { isDark ->
                 updateThemeState(isDark)
+
                 AppCompatDelegate.setDefaultNightMode(
                     if (isDark) AppCompatDelegate.MODE_NIGHT_YES
                     else AppCompatDelegate.MODE_NIGHT_NO
@@ -41,9 +42,7 @@ class ThemeViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun updateThemeState(isDarkTheme: Boolean) {
         _uiState.update { currentState ->
-            currentState.copy(
-                isDarkTheme = isDarkTheme
-            )
+            currentState.copy(isDarkTheme = isDarkTheme)
         }
     }
 

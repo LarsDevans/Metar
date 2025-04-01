@@ -13,15 +13,19 @@ import nl.avans.larsbeijaard.metar.data.avatar.Avatar
 import nl.avans.larsbeijaard.metar.data.avatar.AvatarRepository
 
 class HomeViewModel(
-    avatarRepository: AvatarRepository
+    private val avatarRepository: AvatarRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
-            avatarRepository.getAllStream().collect {
-                _uiState.value = HomeUiState(avatarList = it)
+            try {
+                avatarRepository.getAllStream().collect { avatars ->
+                    _uiState.update { it.copy(avatarList = avatars) }
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(avatarList = emptyList()) }
             }
         }
     }

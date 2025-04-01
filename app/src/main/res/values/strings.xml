@@ -6,4 +6,6 @@
     <string name="username_placeholder">Linde</string>
     <string name="male">Mannelijk</string>
     <string name="female">Vrouwelijk</string>
+    <string name="error_image_description">Avatar afbeelding kon niet laden</string>
+    <string name="dropdown_menu_arrow">Uitvouw menu pijl</string>
 </resources>

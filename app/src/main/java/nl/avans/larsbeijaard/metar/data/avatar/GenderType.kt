@@ -15,10 +15,7 @@ fun String.asGenderType(): GenderType {
 }
 
 fun getAllGenderTypes(context: Context): List<String> {
-    return listOf(
-        context.getString(R.string.female),
-        context.getString(R.string.male)
-    )
+    return GenderType.entries.map { it.toLocalizedGenderString(context) }
 }
 
 fun GenderType.toLocalizedGenderString(context: Context): String {

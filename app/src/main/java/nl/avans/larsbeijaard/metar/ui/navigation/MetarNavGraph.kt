@@ -18,8 +18,6 @@ fun MetarNavHost(
         startDestination = HomeDestination.route,
         modifier = modifier,
     ) {
-        composable(route = HomeDestination.route) {
-            HomeScreen()
-        }
+        composable(route = HomeDestination.route) { HomeScreen() }
     }
 }

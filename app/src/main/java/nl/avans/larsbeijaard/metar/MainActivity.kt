@@ -13,18 +13,20 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import nl.avans.larsbeijaard.metar.ui.theme.MetarTheme
 import nl.avans.larsbeijaard.metar.ui.darkmode.ThemeUiState
 import nl.avans.larsbeijaard.metar.ui.darkmode.ThemeViewModel
+import nl.avans.larsbeijaard.metar.ui.navigation.MetarNavHost
 
 class MainActivity : ComponentActivity() {
     private val themeViewModel: ThemeViewModel by viewModels()
 
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -33,18 +35,24 @@ class MainActivity : ComponentActivity() {
             val themeUiState: ThemeUiState by themeViewModel.uiState.collectAsState()
 
             MetarTheme(darkTheme = themeUiState.isDarkTheme) {
-                Scaffold(
-                    modifier = Modifier.padding(
-                        WindowInsets.systemBars.asPaddingValues()
-                    ),
-                    topBar = { TopBar() }
-                ) {
-                    // Account for the TopBar height.
-                    Box(modifier = Modifier.padding(top = 64.dp)) {
-                        MetarApp()
-                    }
-                }
+                MainScreen()
             }
+        }
+    }
+}
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun MainScreen() {
+    Scaffold(
+        modifier = Modifier.padding(
+            WindowInsets.systemBars.asPaddingValues()
+        ),
+        topBar = { TopBar() }
+    ) {
+        // Account for the TopBar height by adding a padding at the top
+        Box(modifier = Modifier.padding(top = 64.dp)) {
+            MetarNavHost(navController = rememberNavController())
         }
     }
 }

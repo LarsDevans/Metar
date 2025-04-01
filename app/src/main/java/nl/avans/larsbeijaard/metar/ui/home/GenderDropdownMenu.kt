@@ -18,7 +18,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import nl.avans.larsbeijaard.metar.R
 import nl.avans.larsbeijaard.metar.data.avatar.getAllGenderTypes
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,21 +42,21 @@ fun GenderDropdownMenu(
     ) {
         TextField(
             value = selected,
-            onValueChange = {},
+            onValueChange = {}, // It's read-only
             readOnly = true,
             label = { Text("Gender") },
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = null
+                    contentDescription = stringResource(R.string.dropdown_menu_arrow)
                 )
             },
             modifier = Modifier
+                .fillMaxWidth()
                 .menuAnchor(
                     type = MenuAnchorType.PrimaryEditable,
                     enabled = true
                 )
-                .fillMaxWidth()
         )
 
         ExposedDropdownMenu(
@@ -65,7 +69,8 @@ fun GenderDropdownMenu(
                     onClick = {
                         onSelectedChange(option)
                         expanded = false
-                    }
+                    },
+                    modifier = Modifier.semantics { contentDescription = option }
                 )
             }
         }

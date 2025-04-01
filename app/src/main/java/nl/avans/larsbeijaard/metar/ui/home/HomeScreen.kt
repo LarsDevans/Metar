@@ -31,6 +31,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState = viewModel.uiState.collectAsState()
+    val (username, genderType) = uiState.value
 
     Column(
         modifier = modifier,
@@ -38,24 +39,24 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TextField(
-            value = uiState.value.username,
+            value = username,
             onValueChange = { viewModel.updateUsername(it) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = 16.dp),
             label = { Text(stringResource(R.string.username)) },
             placeholder = { Text(stringResource(R.string.username_placeholder)) },
             singleLine = true
         )
 
         GenderDropdownMenu(
-            selected = uiState.value.genderType.toLocalizedGenderString(LocalContext.current),
+            selected = genderType.toLocalizedGenderString(LocalContext.current),
             onSelectedChange = { viewModel.updateGender(it) }
         )
 
         Avatar(
-            model = "https://avatar.iran.liara.run/public/${uiState.value.genderType.toApiString()}?username=${uiState.value.username}",
-            modifier = Modifier.fillMaxWidth(fraction = 0.8f)
+            model = "https://avatar.iran.liara.run/public/${genderType.toApiString()}?username=$username",
+            modifier = Modifier.fillMaxWidth(0.8f)
         )
     }
 }
