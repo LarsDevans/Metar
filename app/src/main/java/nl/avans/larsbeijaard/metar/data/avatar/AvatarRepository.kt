@@ -9,6 +9,7 @@ class DefaultAvatarRepository(
     override fun getByIdStream(id: Int): Flow<Avatar?> = avatarDao.getById(id)
 
     override suspend fun insertAvatar(avatar: Avatar) = avatarDao.insert(avatar)
+    override suspend fun deleteAvatar(avatar: Avatar) = avatarDao.delete(avatar)
 }
 
 interface AvatarRepository {
@@ -16,4 +17,5 @@ interface AvatarRepository {
     fun getByIdStream(id: Int): Flow<Avatar?>
 
     suspend fun insertAvatar(avatar: Avatar)
+    suspend fun deleteAvatar(avatar: Avatar)
 }

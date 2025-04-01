@@ -11,6 +11,7 @@ import nl.avans.larsbeijaard.metar.data.avatar.GenderType
 import nl.avans.larsbeijaard.metar.data.avatar.asGenderType
 import nl.avans.larsbeijaard.metar.data.avatar.Avatar
 import nl.avans.larsbeijaard.metar.data.avatar.AvatarRepository
+import nl.avans.larsbeijaard.metar.data.avatar.toApiString
 
 class HomeViewModel(
     private val avatarRepository: AvatarRepository
@@ -22,7 +23,7 @@ class HomeViewModel(
         viewModelScope.launch {
             try {
                 avatarRepository.getAllStream().collect { avatars ->
-                    _uiState.update { it.copy(avatarList = avatars) }
+                    _uiState.update { avatar -> avatar.copy(avatarList = avatars.sortedByDescending { it.id }) }
                 }
             } catch (e: Exception) {
                 _uiState.update { it.copy(avatarList = emptyList()) }
@@ -37,6 +38,22 @@ class HomeViewModel(
     fun updateGender(gender: String) {
         val genderType = gender.asGenderType()
         _uiState.update { it.copy(genderType = genderType) }
+    }
+
+    fun saveAvatar() {
+        viewModelScope.launch {
+            val avatar = Avatar(
+                username = _uiState.value.username,
+                gender = _uiState.value.genderType.toApiString()
+            )
+            avatarRepository.insertAvatar(avatar = avatar)
+        }
+    }
+
+    fun deleteAvatar(avatar: Avatar) {
+        viewModelScope.launch {
+            avatarRepository.deleteAvatar(avatar = avatar)
+        }
     }
 }
 

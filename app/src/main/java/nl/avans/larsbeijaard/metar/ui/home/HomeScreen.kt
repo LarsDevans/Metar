@@ -2,8 +2,13 @@ package nl.avans.larsbeijaard.metar.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -15,11 +20,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import nl.avans.larsbeijaard.metar.R
+import nl.avans.larsbeijaard.metar.data.avatar.Avatar
+import nl.avans.larsbeijaard.metar.data.avatar.GenderType
 import nl.avans.larsbeijaard.metar.data.avatar.toApiString
 import nl.avans.larsbeijaard.metar.data.avatar.toLocalizedGenderString
 import nl.avans.larsbeijaard.metar.ui.AppViewModelProvider
 import nl.avans.larsbeijaard.metar.ui.component.Avatar
 import nl.avans.larsbeijaard.metar.ui.navigation.NavigationDestination
+import kotlin.reflect.KFunction1
 
 object HomeDestination : NavigationDestination {
     override val route: String = "home"
@@ -38,25 +46,72 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TextField(
-            value = username,
-            onValueChange = { viewModel.updateUsername(it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            label = { Text(stringResource(R.string.username)) },
-            placeholder = { Text(stringResource(R.string.username_placeholder)) },
-            singleLine = true
-        )
+        UsernameInput(username, viewModel::updateUsername)
+        GenderSelection(genderType, viewModel::updateGender)
+        AvatarDisplay(username, genderType)
+        ActionButtons(viewModel::saveAvatar)
+        AvatarList(uiState.value.avatarList, viewModel)
+    }
+}
 
-        GenderDropdownMenu(
-            selected = genderType.toLocalizedGenderString(LocalContext.current),
-            onSelectedChange = { viewModel.updateGender(it) }
-        )
+@Composable
+fun UsernameInput(username: String, onUsernameChange: (String) -> Unit) {
+    TextField(
+        value = username,
+        onValueChange = onUsernameChange,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        label = { Text(stringResource(R.string.username)) },
+        placeholder = { Text(stringResource(R.string.username_placeholder)) },
+        singleLine = true
+    )
+}
 
-        Avatar(
-            model = "https://avatar.iran.liara.run/public/${genderType.toApiString()}?username=$username",
-            modifier = Modifier.fillMaxWidth(0.8f)
-        )
+@Composable
+fun GenderSelection(genderType: GenderType, onGenderChange: KFunction1<String, Unit>) {
+    GenderDropdownMenu(
+        selected = genderType.toLocalizedGenderString(LocalContext.current),
+        onSelectedChange = onGenderChange
+    )
+}
+
+@Composable
+fun AvatarDisplay(username: String, genderType: GenderType) {
+    Avatar(
+        model = "https://avatar.iran.liara.run/public/${genderType.toApiString()}?username=$username",
+        modifier = Modifier.fillMaxWidth(0.8f)
+    )
+}
+
+@Composable
+fun ActionButtons(onSave: () -> Unit) {
+    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        OutlinedButton(onClick = onSave) {
+            Text(text = stringResource(R.string.save))
+        }
+        Button(onClick = {}) {
+            Text(text = stringResource(R.string.download))
+        }
+    }
+}
+
+@Composable
+fun AvatarList(avatarList: List<Avatar>, viewModel: HomeViewModel) {
+    LazyRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start
+    ) {
+        items(avatarList) { avatar ->
+            val model = "https://avatar.iran.liara.run/public/${avatar.gender}?username=${avatar.username}"
+            AvatarShowcase(
+                username = avatar.username.ifEmpty { stringResource(R.string.anonymous) },
+                model = model,
+                modifier = Modifier,
+                onDownload = {},
+                onEdit = {},
+                onDelete = { viewModel.deleteAvatar(avatar) }
+            )
+        }
     }
 }

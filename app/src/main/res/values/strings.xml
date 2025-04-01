@@ -8,4 +8,10 @@
     <string name="female">Vrouwelijk</string>
     <string name="error_image_description">Avatar afbeelding kon niet laden</string>
     <string name="dropdown_menu_arrow">Uitvouw menu pijl</string>
+    <string name="save">Opslaan</string>
+    <string name="download">Download</string>
+    <string name="avatars">Opgeslagen avatars</string>
+    <string name="anonymous">Naamloos</string>
+    <string name="edit">Wijzig</string>
+    <string name="delete">Verwijder</string>
 </resources>

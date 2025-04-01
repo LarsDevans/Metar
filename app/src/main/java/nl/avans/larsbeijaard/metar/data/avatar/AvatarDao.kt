@@ -1,6 +1,7 @@
 package nl.avans.larsbeijaard.metar.data.avatar
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -16,4 +17,7 @@ interface AvatarDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(avatar: Avatar)
+
+    @Delete
+    suspend fun delete(avatar: Avatar)
 }
