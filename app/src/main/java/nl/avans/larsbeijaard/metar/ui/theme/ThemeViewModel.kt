@@ -1,4 +1,4 @@
-package nl.avans.larsbeijaard.metar.ui.viewmodel.theme
+package nl.avans.larsbeijaard.metar.ui.theme
 
 import nl.avans.larsbeijaard.metar.data.DarkModePreferences
 import android.app.Application

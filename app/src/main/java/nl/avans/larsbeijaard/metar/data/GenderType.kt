@@ -1,4 +1,4 @@
-package nl.avans.larsbeijaard.metar.data.constant
+package nl.avans.larsbeijaard.metar.data
 
 import android.content.Context
 import nl.avans.larsbeijaard.metar.R

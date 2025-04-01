@@ -18,8 +18,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import nl.avans.larsbeijaard.metar.ui.theme.MetarTheme
-import nl.avans.larsbeijaard.metar.ui.viewmodel.theme.ThemeUiState
-import nl.avans.larsbeijaard.metar.ui.viewmodel.theme.ThemeViewModel
+import nl.avans.larsbeijaard.metar.ui.theme.ThemeUiState
+import nl.avans.larsbeijaard.metar.ui.theme.ThemeViewModel
 
 class MainActivity : ComponentActivity() {
     private val themeViewModel: ThemeViewModel by viewModels()

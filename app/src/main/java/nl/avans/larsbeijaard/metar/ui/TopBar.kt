@@ -23,7 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import nl.avans.larsbeijaard.metar.R
 import nl.avans.larsbeijaard.metar.ui.icons.Dark_mode
 import nl.avans.larsbeijaard.metar.ui.icons.Light_mode
-import nl.avans.larsbeijaard.metar.ui.viewmodel.theme.ThemeViewModel
+import nl.avans.larsbeijaard.metar.ui.theme.ThemeViewModel
 
 @Composable
 fun TopBar(themeViewModel: ThemeViewModel = viewModel()) {
