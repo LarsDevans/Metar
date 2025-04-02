@@ -46,6 +46,12 @@ class HomeViewModel(
                 username = _uiState.value.username,
                 gender = _uiState.value.genderType.toApiString()
             )
+
+            val existingAvatar = _uiState.value.avatarList.find {
+                it.username == avatar.username && it.gender == avatar.gender
+            }
+            existingAvatar?.let { avatarRepository.deleteAvatar(it) }
+
             avatarRepository.insertAvatar(avatar = avatar)
         }
     }
