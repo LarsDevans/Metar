@@ -2,52 +2,74 @@ package nl.avans.larsbeijaard.metar.data.service
 
 import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 class DownloadService(
-    private val context: Context
+    private val context: Context,
+    private val client: OkHttpClient = OkHttpClient(),
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
-    suspend fun downloadFile(url: String, fileName: String) {
-        withContext(Dispatchers.IO) {
-            val timestamp = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date())
-            val uniqueFileName = "${fileName}_$timestamp"
+    sealed interface DownloadResult {
+        object Success : DownloadResult
+        data class Failure(val error: String) : DownloadResult
+    }
 
-            val values = ContentValues().apply {
-                put(MediaStore.Images.Media.DISPLAY_NAME, uniqueFileName)
-                put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Metar")
-            }
+    suspend fun downloadFile(url: String, fileName: String): DownloadResult = withContext(ioDispatcher) {
+        try {
+            ensureActive()
 
-            val uri = context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            val uniqueFileName = createUniqueFileName(fileName)
+            val uri = createMediaStoreUri(uniqueFileName)
 
             if (uri == null) {
-                Log.e("DownloadFile", "Failed to create file URI")
-                return@withContext
+                return@withContext DownloadResult.Failure("Failed to create file URI")
             }
 
-            try {
-                context.contentResolver.openOutputStream(uri)?.use { outputStream ->
-                    val response = OkHttpClient().newCall(
-                        Request.Builder().url(url).build()
-                    ).execute()
+            context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                ensureActive()
 
-                    response.body?.byteStream()?.use { inputStream ->
+                client.newCall(Request.Builder().url(url).build())
+                    .execute()
+                    .also { response ->
+                        if (!response.isSuccessful) {
+                            throw IOException("HTTP ${response.code}")
+                        }
+                    }
+                    .body?.byteStream()?.use { inputStream ->
+                        ensureActive()
+
                         inputStream.copyTo(outputStream)
-                    } ?: Log.e("DownloadFile", "Failed to download file: Empty response body")
-                }
-            } catch (e: IOException) {
-                Log.e("DownloadFile", "Error downloading file", e)
+                    }
             }
+
+            DownloadResult.Success
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: IOException) {
+            DownloadResult.Failure(e.message ?: "Unknown IO error")
         }
+    }
+
+    private fun createUniqueFileName(fileName: String): String {
+        val timestamp = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date())
+        return "${fileName}_$timestamp"
+    }
+
+    private fun createMediaStoreUri(fileName: String): Uri? {
+        val values = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+            put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+            put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Metar")
+        }
+
+        return context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
     }
 }
