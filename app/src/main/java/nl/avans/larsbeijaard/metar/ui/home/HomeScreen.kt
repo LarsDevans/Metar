@@ -103,7 +103,10 @@ fun LandscapeHomeScreen(
                     genderType = genderType,
                     modifier.fillMaxSize(fraction = 0.5f)
                 )
-                ActionButtons(onSave = { viewModel.saveAvatar() })
+                ActionButtons(
+                    onSave = { viewModel.saveAvatar() },
+                    onDownload = { viewModel.downloadAvatar() }
+                )
             }
         }
 
