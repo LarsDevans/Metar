@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -51,7 +53,10 @@ fun MainScreen() {
         topBar = { TopBar() }
     ) {
         // Account for the TopBar height by adding a padding at the top
-        Box(modifier = Modifier.padding(top = 64.dp, start = 16.dp, end = 16.dp)) {
+        Box(modifier = Modifier
+            .padding(top = 64.dp, start = 16.dp, end = 16.dp)
+            .verticalScroll(rememberScrollState())
+        ) {
             MetarNavHost(navController = rememberNavController())
         }
     }
