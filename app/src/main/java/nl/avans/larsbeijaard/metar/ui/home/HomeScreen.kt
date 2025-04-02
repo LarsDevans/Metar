@@ -60,7 +60,10 @@ fun HomeScreen(
             username = username,
             genderType = genderType
         )
-        ActionButtons(onSave = { viewModel.saveAvatar() })
+        ActionButtons(
+            onSave = { viewModel.saveAvatar() },
+            onDownload = { viewModel.downloadAvatar() }
+        )
         AvatarList(
             navigateToAvatarEdit = navigateToAvatarEdit,
             avatarList = uiState.value.avatarList,
@@ -101,12 +104,12 @@ fun AvatarDisplay(username: String, genderType: GenderType) {
 }
 
 @Composable
-fun ActionButtons(onSave: () -> Unit) {
+fun ActionButtons(onSave: () -> Unit, onDownload: () -> Unit) {
     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
         OutlinedButton(onClick = onSave) {
             Text(text = stringResource(R.string.save))
         }
-        Button(onClick = {}) {
+        Button(onClick = onDownload) {
             Text(text = stringResource(R.string.download))
         }
     }
@@ -127,7 +130,7 @@ fun AvatarList(navigateToAvatarEdit: (Int) -> Unit, avatarList: List<Avatar>, vi
                 username = avatar.username.ifEmpty { stringResource(R.string.anonymous) },
                 model = model,
                 modifier = Modifier,
-                onDownload = {},
+                onDownload = { viewModel.downloadAvatar(avatar) },
                 onEdit = { navigateToAvatarEdit(avatar.id) },
                 onDelete = { viewModel.deleteAvatar(avatar) }
             )
