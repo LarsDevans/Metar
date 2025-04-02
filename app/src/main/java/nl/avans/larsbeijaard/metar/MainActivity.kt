@@ -51,7 +51,7 @@ fun MainScreen() {
         topBar = { TopBar() }
     ) {
         // Account for the TopBar height by adding a padding at the top
-        Box(modifier = Modifier.padding(top = 64.dp)) {
+        Box(modifier = Modifier.padding(top = 64.dp, start = 16.dp, end = 16.dp)) {
             MetarNavHost(navController = rememberNavController())
         }
     }
