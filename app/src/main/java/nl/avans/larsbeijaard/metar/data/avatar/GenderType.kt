@@ -10,12 +10,14 @@ fun String.asGenderType(): GenderType {
     return when (this) {
         "Vrouwelijk" -> GenderType.FEMALE
         "Mannelijk" -> GenderType.MALE
+        "girl" -> GenderType.FEMALE
+        "boy" -> GenderType.MALE
         else -> GenderType.FEMALE
     }
 }
 
-fun getAllGenderTypes(context: Context): List<String> {
-    return GenderType.entries.map { it.toLocalizedGenderString(context) }
+fun getAllGenderTypes(): List<GenderType> {
+    return listOf(GenderType.FEMALE, GenderType.MALE)
 }
 
 fun GenderType.toLocalizedGenderString(context: Context): String {

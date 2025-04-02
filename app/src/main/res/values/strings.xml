@@ -14,4 +14,7 @@
     <string name="anonymous">Naamloos</string>
     <string name="edit">Wijzig</string>
     <string name="delete">Verwijder</string>
+    <string name="use_initials">Gebruik initialen</string>
+    <string name="cancel">Annuleer</string>
+    <string name="gender">Geslacht</string>
 </resources>

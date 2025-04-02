@@ -24,6 +24,7 @@ import nl.avans.larsbeijaard.metar.data.avatar.Avatar
 import nl.avans.larsbeijaard.metar.data.avatar.GenderType
 import nl.avans.larsbeijaard.metar.data.avatar.toApiString
 import nl.avans.larsbeijaard.metar.data.avatar.toLocalizedGenderString
+import nl.avans.larsbeijaard.metar.data.service.getAvatarUrl
 import nl.avans.larsbeijaard.metar.ui.AppViewModelProvider
 import nl.avans.larsbeijaard.metar.ui.component.Avatar
 import nl.avans.larsbeijaard.metar.ui.navigation.NavigationDestination
@@ -35,6 +36,7 @@ object HomeDestination : NavigationDestination {
 
 @Composable
 fun HomeScreen(
+    navigateToAvatarEdit: (Int) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -46,11 +48,24 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        UsernameInput(username, viewModel::updateUsername)
-        GenderSelection(genderType, viewModel::updateGender)
-        AvatarDisplay(username, genderType)
-        ActionButtons(viewModel::saveAvatar)
-        AvatarList(uiState.value.avatarList, viewModel)
+        UsernameInput(
+            username = username,
+            onUsernameChange = { viewModel.updateUsername(it) }
+        )
+        GenderSelection(
+            genderType =  genderType,
+            onGenderChange = { viewModel.updateGender(it) }
+        )
+        AvatarDisplay(
+            username = username,
+            genderType = genderType
+        )
+        ActionButtons(onSave = { viewModel.saveAvatar() })
+        AvatarList(
+            navigateToAvatarEdit = navigateToAvatarEdit,
+            avatarList = uiState.value.avatarList,
+            viewModel =  viewModel
+        )
     }
 }
 
@@ -59,9 +74,7 @@ fun UsernameInput(username: String, onUsernameChange: (String) -> Unit) {
     TextField(
         value = username,
         onValueChange = onUsernameChange,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxWidth(),
         label = { Text(stringResource(R.string.username)) },
         placeholder = { Text(stringResource(R.string.username_placeholder)) },
         singleLine = true
@@ -69,7 +82,7 @@ fun UsernameInput(username: String, onUsernameChange: (String) -> Unit) {
 }
 
 @Composable
-fun GenderSelection(genderType: GenderType, onGenderChange: KFunction1<String, Unit>) {
+fun GenderSelection(genderType: GenderType, onGenderChange: (String) -> Unit) {
     GenderDropdownMenu(
         selected = genderType.toLocalizedGenderString(LocalContext.current),
         onSelectedChange = onGenderChange
@@ -79,7 +92,10 @@ fun GenderSelection(genderType: GenderType, onGenderChange: KFunction1<String, U
 @Composable
 fun AvatarDisplay(username: String, genderType: GenderType) {
     Avatar(
-        model = "https://avatar.iran.liara.run/public/${genderType.toApiString()}?username=$username",
+        model = getAvatarUrl(
+            username = username,
+            gender = genderType.toApiString()
+        ),
         modifier = Modifier.fillMaxWidth(0.8f)
     )
 }
@@ -97,19 +113,22 @@ fun ActionButtons(onSave: () -> Unit) {
 }
 
 @Composable
-fun AvatarList(avatarList: List<Avatar>, viewModel: HomeViewModel) {
+fun AvatarList(navigateToAvatarEdit: (Int) -> Unit, avatarList: List<Avatar>, viewModel: HomeViewModel) {
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Start
     ) {
         items(avatarList) { avatar ->
-            val model = "https://avatar.iran.liara.run/public/${avatar.gender}?username=${avatar.username}"
+            val model = getAvatarUrl(
+                username = avatar.username,
+                gender = avatar.gender
+            )
             AvatarShowcase(
                 username = avatar.username.ifEmpty { stringResource(R.string.anonymous) },
                 model = model,
                 modifier = Modifier,
                 onDownload = {},
-                onEdit = {},
+                onEdit = { navigateToAvatarEdit(avatar.id) },
                 onDelete = { viewModel.deleteAvatar(avatar) }
             )
         }

@@ -1,7 +1,6 @@
 package nl.avans.larsbeijaard.metar.ui.home
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenuItem
@@ -19,11 +18,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
 import nl.avans.larsbeijaard.metar.R
 import nl.avans.larsbeijaard.metar.data.avatar.getAllGenderTypes
+import nl.avans.larsbeijaard.metar.data.avatar.toApiString
+import nl.avans.larsbeijaard.metar.data.avatar.toLocalizedGenderString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,15 +34,13 @@ fun GenderDropdownMenu(
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = it },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+        modifier = Modifier.fillMaxWidth()
     ) {
         TextField(
             value = selected,
             onValueChange = {}, // It's read-only
             readOnly = true,
-            label = { Text("Gender") },
+            label = { Text(stringResource(R.string.gender)) },
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
@@ -63,14 +59,15 @@ fun GenderDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            getAllGenderTypes(LocalContext.current).forEach { option ->
+            getAllGenderTypes().forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(option) },
-                    onClick = {
-                        onSelectedChange(option)
-                        expanded = false
+                    text = {
+                        Text(option.toLocalizedGenderString(LocalContext.current))
                     },
-                    modifier = Modifier.semantics { contentDescription = option }
+                    onClick = {
+                        onSelectedChange(option.toApiString())
+                        expanded = false
+                    }
                 )
             }
         }
