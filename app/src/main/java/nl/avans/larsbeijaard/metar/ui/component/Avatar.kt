@@ -21,7 +21,7 @@ fun Avatar(
     SubcomposeAsyncImage(
         model = model,
         contentDescription = stringResource(R.string.avatar_image),
-        modifier = modifier.fillMaxWidth().aspectRatio(1f),
+        modifier = modifier.aspectRatio(1f),
         loading = { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) },
         error = {
             Image(

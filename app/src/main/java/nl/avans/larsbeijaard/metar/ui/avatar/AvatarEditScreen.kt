@@ -1,8 +1,11 @@
 package nl.avans.larsbeijaard.metar.ui.avatar
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -14,6 +17,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -40,6 +44,89 @@ fun AvatarEditScreen(
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AvatarEditViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    if (isLandscape) {
+        LandscapeAvatarEditScreen(
+            navigateBack = navigateBack,
+            onNavigateUp = onNavigateUp,
+            modifier = modifier,
+            viewModel = viewModel
+        )
+    } else {
+        PortraitAvatarEditScreen(
+            navigateBack = navigateBack,
+            onNavigateUp = onNavigateUp,
+            modifier = modifier,
+            viewModel = viewModel
+        )
+    }
+}
+
+@Composable
+fun LandscapeAvatarEditScreen(
+    navigateBack: () -> Unit,
+    onNavigateUp: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: AvatarEditViewModel
+) {
+    Row(
+        modifier = modifier.fillMaxSize().padding(16.dp)
+    ) {
+        Column(
+            modifier = modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Avatar(
+                model = getAvatarUrl(
+                    username = viewModel.uiState.username,
+                    gender = viewModel.uiState.genderType.toApiString()
+                ),
+                modifier = modifier.fillMaxHeight()
+            )
+        }
+
+        Column(
+            modifier = modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            UsernameInput(
+                username = viewModel.uiState.username,
+                onUsernameChange = { viewModel.updateUsername(it) }
+            )
+
+            GenderDropdownMenu(
+                selected = viewModel.uiState.genderType.toLocalizedGenderString(LocalContext.current),
+                onSelectedChange = { viewModel.updateGender(it) }
+            )
+
+            UseInitialsToggle(
+                useInitials = false,
+                onUseInitialsChange = { }
+            )
+
+            ActionButtons(
+                onCancel = navigateBack,
+                onDownload = { },
+                onSave = {
+                    viewModel.saveAvatarChanges()
+                    navigateBack()
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun PortraitAvatarEditScreen(
+    navigateBack: () -> Unit,
+    onNavigateUp: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: AvatarEditViewModel
 ) {
     Column(
         modifier = modifier.padding(16.dp),
