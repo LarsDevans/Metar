@@ -1,5 +1,6 @@
 package nl.avans.larsbeijaard.metar.ui.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -20,7 +21,7 @@ fun MetarNavHost(
     NavHost(
         navController = navController,
         startDestination = HomeDestination.route,
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
     ) {
         composable(route = HomeDestination.route) {
             HomeScreen(navigateToAvatarEdit = {
