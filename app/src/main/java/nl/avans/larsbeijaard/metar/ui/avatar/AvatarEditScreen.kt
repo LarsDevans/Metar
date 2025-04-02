@@ -85,7 +85,7 @@ fun LandscapeAvatarEditScreen(
                     username = viewModel.uiState.username,
                     gender = viewModel.uiState.genderType.toApiString()
                 ),
-                modifier = modifier.fillMaxHeight()
+                modifier = modifier.fillMaxWidth(0.5f)
             )
         }
 
