@@ -12,7 +12,10 @@ import nl.avans.larsbeijaard.metar.ui.home.HomeViewModel
 object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
-            HomeViewModel(avatarRepository = metarApplication().container.avatarRepository)
+            HomeViewModel(
+                avatarRepository = metarApplication().container.avatarRepository,
+                downloadService = metarApplication().container.downloadService
+            )
         }
 
         initializer {
