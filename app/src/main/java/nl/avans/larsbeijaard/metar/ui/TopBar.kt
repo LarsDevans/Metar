@@ -88,7 +88,6 @@ private fun TrailingInteractiveIcons(themeViewModel: ThemeViewModel) {
     }
 }
 
-@SuppressLint("IntentReset")
 @Composable
 fun FavoriteAvatarPicker() {
     val uriState: MutableState<Uri?> = remember { mutableStateOf(null) }
@@ -108,8 +107,8 @@ fun FavoriteAvatarPicker() {
     // Avoid default Material 3 design; unexpected padding was misattributed to it.
     IconButton(
         onClick = {
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            intent.type = "image/*"
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
             launcher.launch(intent)
         },
         modifier = Modifier.size(40.dp)
