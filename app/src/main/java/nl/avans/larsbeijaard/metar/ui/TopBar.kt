@@ -1,5 +1,6 @@
 package nl.avans.larsbeijaard.metar.ui
 
+import CameraViewModel
 import android.Manifest.permission
 import android.app.Activity
 import android.content.Intent
@@ -46,7 +47,10 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.PermissionStatus
 
 @Composable
-fun TopBar(themeViewModel: ThemeViewModel = viewModel()) {
+fun TopBar(
+    themeViewModel: ThemeViewModel = viewModel(),
+    cameraViewModel: CameraViewModel = viewModel()
+) {
     Surface(
         modifier = Modifier.height(64.dp)
         // Ignore tonal elevation; no scrolling expected.
@@ -59,7 +63,7 @@ fun TopBar(themeViewModel: ThemeViewModel = viewModel()) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Headline()
-            TrailingInteractiveIcons(themeViewModel)
+            TrailingInteractiveIcons(themeViewModel, cameraViewModel)
         }
     }
 }
@@ -73,7 +77,10 @@ private fun Headline() {
 }
 
 @Composable
-private fun TrailingInteractiveIcons(themeViewModel: ThemeViewModel) {
+private fun TrailingInteractiveIcons(
+    themeViewModel: ThemeViewModel,
+    cameraViewModel: CameraViewModel
+) {
     val themeUiState by themeViewModel.uiState.collectAsState()
 
     Row(
@@ -81,7 +88,7 @@ private fun TrailingInteractiveIcons(themeViewModel: ThemeViewModel) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         FavoriteAvatarPicker()
-        CameraOpener()
+        CameraOpener(cameraViewModel)
 
         // Avoid default Material 3 design; unexpected padding was misattributed to it.
         IconButton(
@@ -99,34 +106,21 @@ private fun TrailingInteractiveIcons(themeViewModel: ThemeViewModel) {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun CameraOpener() {
-    val uriState: MutableState<Uri?> = remember { mutableStateOf(null) }
+fun CameraOpener(cameraViewModel: CameraViewModel) {
     val cameraPermission = rememberPermissionState(permission = permission.CAMERA)
-    val launcher = createCameraLauncher(uriState)
-
-    HandleCameraPermission(cameraPermission, launcher)
-}
-
-@Composable
-private fun createCameraLauncher(uriState: MutableState<Uri?>) =
-    rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
-                uriState.value = uri
+                cameraViewModel.uriState.value = uri
             }
         }
     }
 
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-private fun HandleCameraPermission(cameraPermission: PermissionState, launcher: ActivityResultLauncher<Intent>) {
-    when (cameraPermission.status) {
-        PermissionStatus.Granted -> {
-            CameraIconButton { launchCamera(launcher) }
-        }
-        is PermissionStatus.Denied -> {
-            CameraIconButton { cameraPermission.launchPermissionRequest() }
-        }
+    cameraViewModel.cameraPermission = cameraPermission
+    cameraViewModel.createCameraLauncher(launcher)
+
+    CameraIconButton {
+        cameraViewModel.handleCameraPermission()
     }
 }
 
@@ -142,11 +136,6 @@ private fun CameraIconButton(onClick: () -> Unit) {
             contentDescription = stringResource(R.string.camera_opener)
         )
     }
-}
-
-private fun launchCamera(launcher: ActivityResultLauncher<Intent>) {
-    val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-    launcher.launch(intent)
 }
 
 @Composable

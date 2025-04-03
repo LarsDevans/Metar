@@ -1,5 +1,6 @@
 package nl.avans.larsbeijaard.metar.ui
 
+import CameraViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
@@ -23,6 +24,10 @@ object AppViewModelProvider {
                 savedStateHandle =  this.createSavedStateHandle(),
                 avatarRepository = metarApplication().container.avatarRepository
             )
+        }
+
+        initializer {
+            CameraViewModel()
         }
     }
 }
