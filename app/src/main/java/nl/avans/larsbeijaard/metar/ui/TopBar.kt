@@ -1,14 +1,17 @@
 package nl.avans.larsbeijaard.metar.ui
 
-import android.annotation.SuppressLint
+import android.Manifest.permission
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,12 +33,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import nl.avans.larsbeijaard.metar.R
 import nl.avans.larsbeijaard.metar.ui.component.Avatar
-import nl.avans.larsbeijaard.metar.ui.icons.Dark_mode
-import nl.avans.larsbeijaard.metar.ui.icons.Light_mode
 import nl.avans.larsbeijaard.metar.ui.darkmode.ThemeViewModel
+import nl.avans.larsbeijaard.metar.ui.icons.Dark_mode
 import nl.avans.larsbeijaard.metar.ui.icons.Emoticon
+import nl.avans.larsbeijaard.metar.ui.icons.Light_mode
+import nl.avans.larsbeijaard.metar.ui.icons.Photo_camera
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.PermissionStatus
 
 @Composable
 fun TopBar(themeViewModel: ThemeViewModel = viewModel()) {
@@ -73,6 +81,7 @@ private fun TrailingInteractiveIcons(themeViewModel: ThemeViewModel) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         FavoriteAvatarPicker()
+        CameraOpener()
 
         // Avoid default Material 3 design; unexpected padding was misattributed to it.
         IconButton(
@@ -86,6 +95,58 @@ private fun TrailingInteractiveIcons(themeViewModel: ThemeViewModel) {
             )
         }
     }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun CameraOpener() {
+    val uriState: MutableState<Uri?> = remember { mutableStateOf(null) }
+    val cameraPermission = rememberPermissionState(permission = permission.CAMERA)
+    val launcher = createCameraLauncher(uriState)
+
+    HandleCameraPermission(cameraPermission, launcher)
+}
+
+@Composable
+private fun createCameraLauncher(uriState: MutableState<Uri?>) =
+    rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+                uriState.value = uri
+            }
+        }
+    }
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+private fun HandleCameraPermission(cameraPermission: PermissionState, launcher: ActivityResultLauncher<Intent>) {
+    when (cameraPermission.status) {
+        PermissionStatus.Granted -> {
+            CameraIconButton { launchCamera(launcher) }
+        }
+        is PermissionStatus.Denied -> {
+            CameraIconButton { cameraPermission.launchPermissionRequest() }
+        }
+    }
+}
+
+@Composable
+private fun CameraIconButton(onClick: () -> Unit) {
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier.size(40.dp)
+    ) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            imageVector = Photo_camera,
+            contentDescription = stringResource(R.string.camera_opener)
+        )
+    }
+}
+
+private fun launchCamera(launcher: ActivityResultLauncher<Intent>) {
+    val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+    launcher.launch(intent)
 }
 
 @Composable
