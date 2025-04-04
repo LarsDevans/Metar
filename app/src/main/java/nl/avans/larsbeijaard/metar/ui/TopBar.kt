@@ -1,18 +1,14 @@
 package nl.avans.larsbeijaard.metar.ui
 
-import CameraViewModel
 import android.Manifest.permission
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -43,8 +39,7 @@ import nl.avans.larsbeijaard.metar.ui.icons.Emoticon
 import nl.avans.larsbeijaard.metar.ui.icons.Light_mode
 import nl.avans.larsbeijaard.metar.ui.icons.Photo_camera
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.PermissionStatus
+import nl.avans.larsbeijaard.metar.ui.camera.CameraViewModel
 
 @Composable
 fun TopBar(
@@ -109,11 +104,7 @@ private fun TrailingInteractiveIcons(
 fun CameraOpener(cameraViewModel: CameraViewModel) {
     val cameraPermission = rememberPermissionState(permission = permission.CAMERA)
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.data?.let { uri ->
-                cameraViewModel.uriState.value = uri
-            }
-        }
+        // Handle the result of the camera activity
     }
 
     cameraViewModel.cameraPermission = cameraPermission
