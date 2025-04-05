@@ -1,6 +1,6 @@
 package nl.avans.larsbeijaard.metar.ui
 
-import android.annotation.SuppressLint
+import android.Manifest.permission
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -30,15 +30,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import nl.avans.larsbeijaard.metar.R
 import nl.avans.larsbeijaard.metar.ui.component.Avatar
-import nl.avans.larsbeijaard.metar.ui.icons.Dark_mode
-import nl.avans.larsbeijaard.metar.ui.icons.Light_mode
 import nl.avans.larsbeijaard.metar.ui.darkmode.ThemeViewModel
+import nl.avans.larsbeijaard.metar.ui.icons.Dark_mode
 import nl.avans.larsbeijaard.metar.ui.icons.Emoticon
+import nl.avans.larsbeijaard.metar.ui.icons.Light_mode
+import nl.avans.larsbeijaard.metar.ui.icons.Photo_camera
+import com.google.accompanist.permissions.rememberPermissionState
+import nl.avans.larsbeijaard.metar.ui.camera.CameraViewModel
 
 @Composable
-fun TopBar(themeViewModel: ThemeViewModel = viewModel()) {
+fun TopBar(
+    themeViewModel: ThemeViewModel = viewModel(),
+    cameraViewModel: CameraViewModel = viewModel()
+) {
     Surface(
         modifier = Modifier.height(64.dp)
         // Ignore tonal elevation; no scrolling expected.
@@ -51,7 +58,7 @@ fun TopBar(themeViewModel: ThemeViewModel = viewModel()) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Headline()
-            TrailingInteractiveIcons(themeViewModel)
+            TrailingInteractiveIcons(themeViewModel, cameraViewModel)
         }
     }
 }
@@ -65,7 +72,10 @@ private fun Headline() {
 }
 
 @Composable
-private fun TrailingInteractiveIcons(themeViewModel: ThemeViewModel) {
+private fun TrailingInteractiveIcons(
+    themeViewModel: ThemeViewModel,
+    cameraViewModel: CameraViewModel
+) {
     val themeUiState by themeViewModel.uiState.collectAsState()
 
     Row(
@@ -73,6 +83,7 @@ private fun TrailingInteractiveIcons(themeViewModel: ThemeViewModel) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         FavoriteAvatarPicker()
+        CameraOpener(cameraViewModel)
 
         // Avoid default Material 3 design; unexpected padding was misattributed to it.
         IconButton(
@@ -85,6 +96,36 @@ private fun TrailingInteractiveIcons(themeViewModel: ThemeViewModel) {
                 contentDescription = stringResource(R.string.dark_light_mode)
             )
         }
+    }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun CameraOpener(cameraViewModel: CameraViewModel) {
+    val cameraPermission = rememberPermissionState(permission = permission.CAMERA)
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        // Handle the result of the camera activity
+    }
+
+    cameraViewModel.cameraPermission = cameraPermission
+    cameraViewModel.createCameraLauncher(launcher)
+
+    CameraIconButton {
+        cameraViewModel.handleCameraPermission()
+    }
+}
+
+@Composable
+private fun CameraIconButton(onClick: () -> Unit) {
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier.size(40.dp)
+    ) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            imageVector = Photo_camera,
+            contentDescription = stringResource(R.string.camera_opener)
+        )
     }
 }
 

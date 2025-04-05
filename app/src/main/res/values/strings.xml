@@ -18,4 +18,5 @@
     <string name="cancel">Annuleer</string>
     <string name="gender">Geslacht</string>
     <string name="favorite_avatar">Favoriete avatar</string>
+    <string name="camera_opener">Open camera</string>
 </resources>
